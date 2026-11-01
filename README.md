@@ -1,0 +1,2 @@
+# -spolecne-fotografie
+Baarovka-Dubicne

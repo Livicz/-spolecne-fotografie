@@ -16,7 +16,8 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
-<meta name="twitter:card" content="summary_large_image">  <style>
+<meta name="twitter:card" content="summary_large_image">
+  <style>
     :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: linear-gradient(145deg,#f5f5f7,#eaf0f8); color: #1d1d1f; padding: 24px; }
@@ -35,6 +36,17 @@
     a.button:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(0,0,0,.08); }
     a.primary { background: #007aff; color: white; }
     a.secondary { background: #eaf2ff; color: #0066d6; }
+    button.notify { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 20px; min-height: 58px; border-radius: 15px; font-size: 16px; font-weight: 650; width: 100%; border: 1px solid #dce8e2; background: #e9f6ee; color: #23764a; cursor: pointer; font-family: inherit; }
+    button.notify:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(0,0,0,.08); }
+    .notify-panel { margin-top: 16px; text-align: left; padding: 22px; border-radius: 18px; background: #f8fafc; border: 1px solid #e5e9ef; }
+    .notify-panel[hidden] { display: none; }
+    .notify-panel h2 { margin: 0 0 10px; font-size: 19px; letter-spacing: -.02em; }
+    .notify-panel p { margin: 0 0 12px; font-size: 14px; line-height: 1.55; }
+    .notify-panel ol { margin: 0 0 14px; padding-left: 23px; color: #4b5563; font-size: 14px; line-height: 1.7; }
+    .topic-box { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px; border-radius: 12px; background: white; border: 1px solid #e0e6ec; }
+    .topic-box code { overflow-wrap: anywhere; flex: 1; font-size: 13px; }
+    .copy-topic { border: 0; border-radius: 9px; padding: 9px 12px; background: #007aff; color: white; font-weight: 650; cursor: pointer; }
+    .notify-panel .tiny { font-size: 12px; color: #777b84; margin-top: 12px; margin-bottom: 0; }
     .note { font-size: 13px; color: #777b84; margin-top: 28px; line-height: 1.5; }
     @media (max-width: 480px) { main { padding: 43px 22px 30px; border-radius: 24px; } }
   </style>
@@ -53,8 +65,44 @@
       <a class="button primary" href="http://IVIK007.quickconnect.to/mo/sharing/oRG2R9M9n" target="_blank" rel="noopener noreferrer">▧ &nbsp; Prohlížet fotografie</a>
       <!-- 2. SEM VLOŽ ODKAZ Z FUNKCE VYŽÁDÁNÍ FOTOGRAFIÍ -->
       <a class="button secondary" href="http://IVIK007.quickconnect.to/mo/request/hCnRg37ht" target="_blank" rel="noopener noreferrer">＋ &nbsp; Přidat fotografie</a>
+      <button class="button notify" id="notify-toggle" type="button" aria-expanded="false" aria-controls="notify-panel">🔔 &nbsp; Zapnout upozornění</button>
     </div>
+    <section class="notify-panel" id="notify-panel" hidden aria-label="Návod k upozorněním">
+      <h2>Upozornění na nové fotografie</h2>
+      <p>Když někdo přidá nové snímky, přijde vám souhrnné oznámení. Stačí jednorázově nastavit bezplatnou aplikaci <strong>ntfy</strong>.</p>
+      <ol>
+        <li>Nainstalujte si aplikaci <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer">ntfy</a> pro iPhone nebo Android.</li>
+        <li>Otevřete ji a klepněte na <strong>+</strong> (přidat odběr).</li>
+        <li>Do pole <strong>Topic name</strong> vložte tento název kanálu:</li>
+      </ol>
+      <div class="topic-box"><code id="topic-name">bardu-fotky-7k29m4x8p6</code><button class="copy-topic" type="button" id="copy-topic">Kopírovat</button></div>
+      <ol start="4">
+        <li>Klepněte na <strong>Subscribe</strong> a povolte oznámení.</li>
+      </ol>
+      <p class="tiny">Aplikaci ntfy je potřeba nainstalovat jen pro upozornění. Prohlížení a přidávání fotografií funguje i bez ní. Kanál je veřejný – neposílejte do něj osobní údaje.</p>
+    </section>
     <div class="note">Při přidávání fotografií vás Synology požádá o uvedení jména.<br>Registrace ani instalace aplikace není potřeba.</div>
   </main>
+  <script>
+    const toggle = document.getElementById('notify-toggle');
+    const panel = document.getElementById('notify-panel');
+    toggle.addEventListener('click', () => {
+      const opening = panel.hidden;
+      panel.hidden = !opening;
+      toggle.setAttribute('aria-expanded', String(opening));
+      if (opening) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+    document.getElementById('copy-topic').addEventListener('click', async () => {
+      const button = document.getElementById('copy-topic');
+      const value = document.getElementById('topic-name').textContent;
+      try {
+        await navigator.clipboard.writeText(value);
+        button.textContent = 'Zkopírováno ✓';
+        setTimeout(() => { button.textContent = 'Kopírovat'; }, 2200);
+      } catch {
+        button.textContent = 'Označte a zkopírujte název';
+      }
+    });
+  </script>
 </body>
 </html>
